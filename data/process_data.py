@@ -67,7 +67,7 @@ def clean_data(df):
     #change entries of colums to numeric value (eg 'health_1' --> 1)
     for column in categories:
         categories[column] = categories[column].str.strip().str[-1]
-        pd.to_numeric(categories[column])
+        categories[column] = pd.to_numeric(categories[column])
 
     # drop the original categories column from `df`
     df = df.drop(columns=['categories'])

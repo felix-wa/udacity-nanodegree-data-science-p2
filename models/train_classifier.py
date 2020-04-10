@@ -73,7 +73,10 @@ def delete_stop_words(text):
     OUTPUT:
         text_no_stopwords : list of tokens without stopwords
     '''
-    text_no_stopwords = [word for word in text if word not in stopwords.words("english")]
+    text_no_stopwords =[]
+    for word in text:
+        if word not in stopwords.words("english"):
+            text_no_stopwords.append(word)
     return text_no_stopwords
 
 def delete_punctuation(text):
@@ -132,19 +135,14 @@ def clean_text(text):
         text : uncleaned string of data
         
     OUTPUT:
-        clean_tokens_in_one_string : all tokens of a message in one string 
-        devided by a space
+        text : clean text in tokens
     '''
-    clean_tokens_in_one_string = []
-    for message in text:
-        message = delete_punctuation(message)
-        message = tokenize(message)
-        message = delete_stop_words(message)
-        message = stemm(message)
-        message = lematize(message)
-        clean_tokens_in_one_string.append(' '.join(map(str, message)))
-
-    return clean_tokens_in_one_string
+    text = delete_punctuation(text)
+    text = tokenize(text)
+    text = delete_stop_words(text)
+    text = stemm(text)
+    text = lematize(text)
+    return text
 
 
 def build_model():
@@ -166,7 +164,7 @@ def build_model():
         
     '''
     pipeline = Pipeline([
-        ('vectorizer', CountVectorizer()),
+        ('vectorizer', CountVectorizer(tokenizer=clean_text)),
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier(
                 RandomForestClassifier()
@@ -174,13 +172,12 @@ def build_model():
         ])
     
     # parameters to grid search
-    parameters = { 'vectorizer__max_features' : [500],#, 72, 144, 288, 576, 1152],
-            'clf__estimator__n_estimators' : [50]}#, 100] }
-
-        
+    parameters = { 'vectorizer__max_features' : [300],#, 72, 144, 288, 576, 1152],
+            'clf__estimator__n_estimators' : [10]}#, 50, 100, 125, 150] }
+   
     # initiating GridSearchCV method
     model = GridSearchCV(pipeline, param_grid=parameters, cv = 5)
-
+    
     return model
 
 
@@ -232,21 +229,17 @@ def main():
         print('...done')
         
         #For tests comment in have quick runs with less data
-        X = X.head(200)
-        Y = Y.head(200)
-        
-        print('Cleaning and tokenizing messages...\n')
-        X = clean_text(X)
-        print('...done')
-        
-        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
+        #X = X.head(1000)
+        #Y = Y.head(1000)
+                
+        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.33)
         
         print('Building model...')
         model = build_model()
         print('...done')
         
         print('Training model...')
-        model.fit(X_train, Y_train)
+        model.fit(X_train, Y_train)      
         print('...done')
         
         print('Evaluating model...')
@@ -256,7 +249,7 @@ def main():
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
         save_model(model, model_filepath)
         print('...done. Trained model saved!')
-
+        
     else:
         print('Please provide the filepath of the disaster messages database '\
               'as the first argument and the filepath of the pickle file to '\
