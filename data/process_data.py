@@ -81,20 +81,21 @@ def clean_data(df):
     return df
 
 
-def save_data(df, database_filename):
+def save_data(df, database_filepath):
     '''
     This function saves the clean data in a SQL database
     
     INPUT:
         df - dataframe that should be saved
-        database_filename - filepath where the DB will be located
+        database_filepath - filepath where the DB will be located
         
     OUTPUT:
         no return value
         saved database 
     '''
-    engine = create_engine(database_filename)
-    df.to_sql('t_clean_messages', engine, index=False)
+    db_name = 'sqlite:///.\\' + database_filepath
+    engine = create_engine(db_name)
+    df.to_sql('t_clean_messages', engine, if_exists = 'replace', index=False)
 
 
 def main():

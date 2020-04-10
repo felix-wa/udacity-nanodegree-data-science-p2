@@ -21,7 +21,7 @@ db_place = 'sqlite:///.\P2_disaster_response.db'#'sqlite:///.\data\P2_disaster_r
 table_name = 't_clean_messages'
 url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
 
-def load_data(db_place, table_name):
+def load_data(db_place):
     '''
     This function loads the data form the database
     
@@ -37,8 +37,9 @@ def load_data(db_place, table_name):
         Y : data frame with lables
         category_names : list of category names
     '''
-    engine = create_engine(db_place)
-    df = pd.read_sql_table(table_name, engine)
+    db_name = 'sqlite:///.\\' + db_place
+    engine = create_engine(db_name)
+    df = pd.read_sql_table('t_clean_messages', engine)
     X = df['message']
     Y = df[df.columns[4:]]
     category_names = list(Y.columns)
@@ -173,8 +174,8 @@ def build_model():
         ])
     
     # parameters to grid search
-    parameters = { 'vectorizer__max_features' : [50],
-            'clf__estimator__n_estimators' : [50] }
+    parameters = { 'vectorizer__max_features' : [500],#, 72, 144, 288, 576, 1152],
+            'clf__estimator__n_estimators' : [50]}#, 100] }
 
         
     # initiating GridSearchCV method
@@ -229,6 +230,10 @@ def main():
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
         X, Y, category_names = load_data(database_filepath)
         print('...done')
+        
+        #For tests comment in have quick runs with less data
+        X = X.head(200)
+        Y = Y.head(200)
         
         print('Cleaning and tokenizing messages...\n')
         X = clean_text(X)
