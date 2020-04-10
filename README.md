@@ -60,6 +60,12 @@ _Evaluate_ _the_ _Results_
 
 	This project took quite a wile for me because I have never worked with categorization before and I had to learn everything new. Overall it was extreamly interesting to see how classification works and to be able to set up my own. I learned a lot of new things and have good understanding of the basics now. In future I plan to deep dive in the different methods of classifications and to implement different methods. Additionally I learned to work with stack overflow and how to post questions there.
 
+**Further Investigarion Necessary At A Later Point In Time**
+
+	I need to claryfy why the pkl file increases in size that much with some more features. My uderstanding is that there is kind of a matching table of keywords and cateories inside. My file increases to some hundered MB when I use more than 1000 features.
+	
+	Training takes quite long, maybe there is a way to increase the perfoemance.
+
 **Instructions**
 
 1. Run the following commands in the project's root directory to set up your database and model.

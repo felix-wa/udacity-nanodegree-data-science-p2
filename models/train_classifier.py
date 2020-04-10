@@ -172,8 +172,8 @@ def build_model():
         ])
     
     # parameters to grid search
-    parameters = { 'vectorizer__max_features' : [1000],#, 72, 144, 288, 576, 1152],
-            'clf__estimator__n_estimators' : [75]}#, 50, 100, 125, 150] }
+    parameters = { 'vectorizer__max_features' : [300],#, 72, 144, 288, 576, 1152],
+            'clf__estimator__n_estimators' : [10]}#, 50, 100, 125, 150] }
    
     # initiating GridSearchCV method
     model = GridSearchCV(pipeline, param_grid=parameters, cv = 5)
@@ -229,10 +229,10 @@ def main():
         print('...done')
         
         #For tests comment in have quick runs with less data
-        #X = X.head(100)
-        #Y = Y.head(100)
+        #X = X.head(1000)
+        #Y = Y.head(1000)
                 
-        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
+        X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.33)
         
         print('Building model...')
         model = build_model()

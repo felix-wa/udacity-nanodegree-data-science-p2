@@ -19,16 +19,7 @@ app = Flask(__name__)
 
 url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
 
-# def tokenize(text):
-#     tokens = word_tokenize(text)
-#     lemmatizer = WordNetLemmatizer()
 
-#     clean_tokens = []
-#     for tok in tokens:
-#         clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-#         clean_tokens.append(clean_tok)
-
-#     return clean_tokens
 def tokenize(text):
     '''
     This function tokenizes the data
@@ -177,7 +168,7 @@ def index():
             'data': [
                 Bar(
                     x=category_names,
-                    y=category_values
+                    y=category_values,
                 )
             ],
 
