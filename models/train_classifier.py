@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report,accuracy_score
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
@@ -140,7 +141,7 @@ def clean_text(text):
     text = delete_punctuation(text)
     text = tokenize(text)
     text = delete_stop_words(text)
-    text = stemm(text)
+    #text = stemm(text)
     text = lematize(text)
     return text
 
@@ -167,13 +168,13 @@ def build_model():
         ('vectorizer', CountVectorizer(tokenizer=clean_text)),
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier(
-                RandomForestClassifier()
+                AdaBoostClassifier()#RandomForestClassifier()
                 ))      
         ])
     
     # parameters to grid search
     parameters = { 'vectorizer__max_features' : [300],#, 72, 144, 288, 576, 1152],
-            'clf__estimator__n_estimators' : [10]}#, 50, 100, 125, 150] }
+            'clf__estimator__n_estimators' : [50]}#, 50, 100, 125, 150] }
    
     # initiating GridSearchCV method
     model = GridSearchCV(pipeline, param_grid=parameters, cv = 5)
@@ -229,8 +230,8 @@ def main():
         print('...done')
         
         #For tests comment in have quick runs with less data
-        #X = X.head(1000)
-        #Y = Y.head(1000)
+        X = X.head(1000)
+        Y = Y.head(1000)
                 
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.33)
         
@@ -250,6 +251,7 @@ def main():
         save_model(model, model_filepath)
         print('...done. Trained model saved!')
         
+        print(X)
     else:
         print('Please provide the filepath of the disaster messages database '\
               'as the first argument and the filepath of the pickle file to '\
